@@ -1,11 +1,11 @@
 === wp-data-triplify ===
 Contributors: Douglas Paranhos & Eduardo Andrade
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 1.0.0
+Tested up to: 4.2
+Stable tag: 1.0.1
 Tags: data, posts, triplify
 
-A plugin that triplifies your wordpress data.
+A plugin to triplify your wordpress data.
 
 == Description ==
 
@@ -70,3 +70,7 @@ And that's all.
 
 = 1.0.0 =	
 * Initial release version. Tested and found works well without any issues.
+
+= 1.0.1 =
+* Data in JSON-LD format now under the same context.
+* User now can delete correspondences which were mistakenly made.

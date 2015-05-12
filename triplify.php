@@ -4,7 +4,7 @@
 Plugin Name: Data-Triplify JSON
 Description: Triplify your wordpress posts
 Author: Douglas Paranhos & Eduardo Andrade
-Version: 1.0.0
+Version: 1.0.1
 Author URI: https://br.linkedin.com/pub/douglas-paranhos/54/87a/929
 */
 
@@ -127,11 +127,14 @@ add_action( 'wp_ajax_triplify_action', 'triplify_action_callback' );
 function triplify_action_callback() {
 	
 	global $wpdb;
+	$post = $_POST["post_type"];
+	//$valores_novos = array();
+	$tabela = 'wp_triplify_configurations';
 	
 	//saving correspondences
 	foreach(array_values($_POST['arrayCorrespondencias']) as $opcoes){
-		$post = $_POST["post_type"];
 		$coluna = $opcoes["coluna"];
+		//array_push($valores_novos, strtolower($coluna));
 		$valor_correspondente = $opcoes["valor"];
 		
 		if($opcoes["uri"] == 'true'){
@@ -139,8 +142,7 @@ function triplify_action_callback() {
 		} else {
 			$uri = false;
 		}
-		
-		$tabela = 'wp_triplify_configurations';
+
 		$valor_anterior_banco = $wpdb->get_row("SELECT uri FROM {$wpdb->prefix}triplify_configurations WHERE tipo='".$post."' and coluna='".$coluna."'", OBJECT);
 		if($valor_anterior_banco != null){
 			$wpdb->update($tabela, array('tipo' => $post, 'coluna' => $coluna, 'uri' => $uri, 'valor_correspondente' => $opcoes["valor"]), array('tipo' => $post, 'coluna' => $coluna));
@@ -148,6 +150,13 @@ function triplify_action_callback() {
 			$wpdb->insert($tabela, array('tipo' => $post, 'coluna' => $coluna, 'uri' => $uri, 'valor_correspondente' => $opcoes["valor"]));
 		}
 		
+	}
+	
+	foreach(array_values($_POST['colunasRemoverBanco']) as $coluna){
+		$valor_anterior_banco = $wpdb->get_row("SELECT uri FROM {$wpdb->prefix}triplify_configurations WHERE tipo='".$post."' and coluna='".$coluna."'", OBJECT);
+		if($valor_anterior_banco != null){
+			$wpdb->delete($tabela, array( 'tipo' => $post, 'coluna' => $coluna));
+		}
 	}
 	
 	//saving base url

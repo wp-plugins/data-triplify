@@ -15,7 +15,12 @@ class dt_TextRDF {
 		$RDF = $RDF."xmlns:rdf= \"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" ";//every post have to have
 		
 		foreach($prefixos_banco as $prefix){//always there will be at maximum one of each.
-			if(in_array(strtolower($prefix->prefixo), $prefixos) && $prefix->prefixo != "rdf") $RDF = $RDF."xmlns:".$prefix->prefixo."= "."\"$prefix->uri\" ";
+			if(in_array(strtolower($prefix->prefixo), $prefixos) && $prefix->prefixo != "rdf"){
+				if(substr($prefix->uri, -1) != "/"){
+					$prefix->uri = $prefix->uri."/";
+				}
+				$RDF = $RDF."xmlns:".$prefix->prefixo."= "."\"$prefix->uri\" ";
+			}
 		}
 		$RDF = $RDF.">";
 		echo htmlentities($RDF);

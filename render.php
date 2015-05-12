@@ -26,7 +26,7 @@ class dt_Render {
 
 								if(!empty($posts)){
 									foreach($posts as $tipo){
-										echo "<code><a href=\"$url\\$url_base\\$tipo->tipo\">$tipo->tipo</a></code>" ;
+										echo "<code><a href=\"$url/$url_base/$tipo->tipo\">$tipo->tipo</a></code>" ;
 									}
 								} else {
 									echo "No types triplified yet.";
@@ -159,7 +159,7 @@ class dt_Render {
 					$contador."- <input  type='checkbox' id='uri".$contador."' ".$checked."/>".
 					$resultadoX->meta_key." => ".
 					"<input class='input_triplify' value='". $valor ."' id='correspondencia".$contador."'  mk='".$resultadoX->meta_key."' contador='".$contador."'/>". 
-					"não é importante". "<input class='checkbox_nao_interessa' type='checkbox' id='nao_me_interessa$contador'/>".
+					"not important". "<input class='checkbox_nao_interessa' type='checkbox' id='nao_me_interessa$contador'/>".
 					"</p></div>";
 					$contador++;
 				}
@@ -216,6 +216,7 @@ class dt_Render {
 			<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 			<script type="text/javascript">
 			jQuery(document).ready(function($) {
+				colunasRemoverBanco = new Array();
 				$("#id").click(function(){
 					var post_type = $('#post_type').val(); 
 					var arrayCorrespondencias = new Array();
@@ -271,7 +272,8 @@ class dt_Render {
 							'action' : 'triplify_action',
 							'post_type': post_type,
 							'uri_base': uri_base,
-							'arrayCorrespondencias': arrayCorrespondencias
+							'arrayCorrespondencias': arrayCorrespondencias,
+							'colunasRemoverBanco': colunasRemoverBanco
 					};
 					$.post(ajaxurl, data, function(response) { 
 						<!-- ver o que fazer quando falhar a requisição -->
@@ -540,6 +542,8 @@ class dt_Render {
 					
 					var correspondencia = "#correspondencia";
 					var correspondenciaX = correspondencia.concat(contador);
+					
+					colunasRemoverBanco.push($(correspondenciaX).attr('mk')	);
 					
 					$(correspondenciaX).val("");
 					$(elementoEsconder).hide();

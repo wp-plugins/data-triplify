@@ -10,7 +10,7 @@ class dt_TextJSON {
 		global $wpdb;
 		$prefixos_banco = $wpdb->get_results("SELECT * FROM wp_triplify_prefixes");
 		
-		$context = array();
+		/*$context = array();
 		
 		foreach($posts as $post){
 			$property = "rdf:about";
@@ -39,13 +39,16 @@ class dt_TextJSON {
 			$pronto = json_encode($compacted, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 			$pronto = str_replace('="', "", $pronto);
 			echo $pronto;
-		}
-		/*echo "{"; //global keys
+		}*/
+		echo "{"; //global keys
 		
 		echo "\"@context\"	:{"; //context keys
-		echo "\"rdf\": { \"@id\": \"http://purl.org/dc/elements/1.1/dc\", \"@type\": \"@id\" }";//rdf:about
-		foreach($prefixos_banco as $prefix){//always there will be at maximum one of each.
-			if(in_array(strtolower($prefix->prefixo), $prefixos) && $prefix->prefixo != "rdf") {
+		echo "\"rdf\": { \"@id\": \"http://www.w3.org/1999/02/22-rdf-syntax-ns#\", \"@type\": \"@id\" }";//rdf:about
+		foreach($prefixos_banco as $prefix){//always will have at maximum one of each.
+			if(in_array(strtolower($prefix->prefixo), $prefixos) && strtolower($prefix->prefixo) != "rdf") {
+				if(substr($prefix->uri, -1) != "/"){
+					$prefix->uri = $prefix->uri."/";
+				}
 				echo ", \"".$prefix->prefixo."\":";
 				//echo $prefix->prefixo."= "."\"$prefix->uri\" ";
 				echo "{\"@id\":";
@@ -53,22 +56,33 @@ class dt_TextJSON {
 				echo "}";
 			}
 		}
-		echo "},";// context keys
+		echo "}, \"@graph\": [";// context keys
+		$contador = 0;
 		foreach($posts as $post){
-			//echo "{";
-			echo "\"rdf:about\":".$option_URI_base.$post->ID;
-			foreach($array_contendo_objetos_usados as $object){
-				$property = $object->fullProperty;
-				//if($object->uri == 0) echo "\"$property\"";
-				//else echo $property;
-				//echo "\"$post->$property\"";
-				echo " \"".$property."\":	";
-				if($object->uri == 0)echo "\"".$post->$property."\",";
-				else echo $post->$property.",";
+			if($contador > 0){
+				echo ", ";
+			}else {
+				$contador = 1;
 			}
-			//echo "}";
+			echo "{";
+			echo "\"rdf:about\":";
+			echo " \"".$option_URI_base."/".$post->ID."\"";
+			$contador_de_dentro = 0;
+			foreach($array_contendo_objetos_usados as $object){
+				if($contador > 0){
+					echo ", ";
+				}else {
+					$contador = 1;
+				}
+				$property = $object->fullProperty;
+				echo " \"".$property."\":	";
+				$post->$property = str_replace("\"","'",$post->$property);
+				if($object->uri == 0) echo htmlentities("\"".$post->$property."\"");
+				else echo htmlentities($post->$property);
+			}
+			echo "}";
 		}
-		echo "}";// global keys*/
+		echo "]}";// global keys*/
 	}
 }
 
