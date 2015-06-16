@@ -77,8 +77,10 @@ class dt_TextJSON {
 				$property = $object->fullProperty;
 				echo " \"".$property."\":	";
 				$post->$property = str_replace("\"","'",$post->$property);
-				if($object->uri == 0) echo htmlentities("\"".$post->$property."\"");
-				else echo htmlentities($post->$property);
+				//if($object->uri == 0) 
+					echo htmlentities("\"".$post->$property."\"");
+				//else 
+				//	echo htmlentities($post->$property);
 			}
 			echo "}";
 		}
